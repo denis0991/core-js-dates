@@ -229,20 +229,31 @@ function getWeekNumberByDate(date) {
 function getNextFridayThe13th(date) {
   let year = date.getFullYear();
   let month = date.getMonth();
+  const day = date.getDate();
 
-  while (true) {
+  if (day >= 13) {
+    month += 1;
     if (month > 11) {
       month = 0;
       year += 1;
     }
-
-    const potentialFriday13th = new Date(year, month, 13);
-    if (potentialFriday13th > date && potentialFriday13th.getDay() === 5) {
-      return potentialFriday13th;
-    }
-
-    month += 1;
   }
+
+  function searchNext(year1, month1, startDate) {
+    const candidate = new Date(year1, month1, 13);
+    if (candidate > startDate && candidate.getDay() === 5) {
+      return candidate;
+    }
+    let nextMonth = month1 + 1;
+    let nextYear = year1;
+    if (nextMonth > 11) {
+      nextMonth = 0;
+      nextYear += 1;
+    }
+    return searchNext(nextYear, nextMonth, startDate);
+  }
+
+  return searchNext(year, month, date);
 }
 
 /**
